@@ -1,6 +1,6 @@
 package com.tdd.todo.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -8,9 +8,12 @@ import java.util.UUID;
 /**
  * A DTO for the {@link com.tdd.todo.model.Todo} entity
  */
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 public class TodoResponse implements Serializable {
-    private final UUID id;
-    private final String task;
-    private final boolean completed;
+    private UUID id;
+    private String task;
+    private boolean completed;
 }

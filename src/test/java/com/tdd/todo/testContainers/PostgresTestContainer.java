@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 public class PostgresTestContainer {
-    @Rule
     static final PostgreSQLContainer postgreSQLContainer;
 
     static {
@@ -36,7 +35,7 @@ public class PostgresTestContainer {
 
     @Test
     @DisplayName("Postgres test container is running")
-    void postgres_container_is_initialized() {
+    public void postgres_container_is_initialized() {
         assertTrue(postgreSQLContainer.isRunning());
     }
 }
