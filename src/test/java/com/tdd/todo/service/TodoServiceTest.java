@@ -55,9 +55,21 @@ public class TodoServiceTest extends PostgresTestContainer {
 
         @Test
         void getSingleTodosFromDatabase() {
-            todoRepository.save(new Todo(UUID.randomUUID(), "task 1", false));
+            Todo todo = new Todo(null, "task 1", false);
+            todoRepository.save(todo);
             List<TodoResponse> allTodo = todoService.getAllTodo();
             assertEquals(1, allTodo.size());
+            assertNotNull(allTodo.get(0).getId());
+            assertEquals(todo.getTask(), allTodo.get(0).getTask());
+            assertEquals(todo.isCompleted(), allTodo.get(0).isCompleted());
+        }
+
+        @Test
+        void get10todosFromDatabase() {
+            for (int i = 0; i < 10; i++)
+                todoRepository.save(new Todo(UUID.randomUUID(), "task " + i, false));
+            List<TodoResponse> allTodo = todoService.getAllTodo();
+            assertEquals(10, allTodo.size());
         }
 
     }
