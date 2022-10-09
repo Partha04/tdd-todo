@@ -17,13 +17,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest
@@ -90,6 +90,22 @@ class TodoControllerTest {
                     .andExpect(jsonPath("$[0].task").value(todoResponse.getTask()))
                     .andExpect(jsonPath("$[0].completed").value(false));
 
+            verify(todoService, times(1)).getAllTodo();
+        }
+
+        @Test
+        void getAllTodosGivesAll10Todos() throws Exception {
+            //arrange
+            List<TodoResponse> todoResponseList = new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                todoResponseList.add(new TodoResponse(UUID.randomUUID(), "Task" + i, false));
+            }
+            when(todoService.getAllTodo()).thenReturn(todoResponseList);
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo");
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(content().json(mapper.writeValueAsString(todoResponseList)));
             verify(todoService, times(1)).getAllTodo();
         }
 
