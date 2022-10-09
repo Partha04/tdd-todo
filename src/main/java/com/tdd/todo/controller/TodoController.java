@@ -24,6 +24,6 @@ public class TodoController {
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
     List<TodoResponse> getAlTodos() {
-        return null;
+        return todoService.getAllTodo();
     }
 }

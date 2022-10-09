@@ -9,7 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.List;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -22,5 +22,10 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = mapper.map(createTodoRequest, Todo.class);
         Todo savedTodo = todoRepository.save(todo);
         return mapper.map(savedTodo, TodoResponse.class);
+    }
+
+    @Override
+    public List<TodoResponse> getAllTodo() {
+        return null;
     }
 }
