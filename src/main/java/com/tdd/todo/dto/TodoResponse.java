@@ -12,5 +12,5 @@ import java.util.UUID;
 public class TodoResponse implements Serializable {
     private final UUID id;
     private final String task;
-    private final boolean isCompleted;
+    private final boolean completed;
 }

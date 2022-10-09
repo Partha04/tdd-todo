@@ -1,19 +1,21 @@
 package com.tdd.todo.controller;
 
+import com.tdd.todo.dto.CreateTodoRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.service.TodoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/todo")
 public class TodoController {
+    @Autowired
+    TodoService todoService;
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    TodoResponse createNewTodo(){
-        return null;
+    TodoResponse createNewTodo(@RequestBody CreateTodoRequest createTodoDto) {
+        return todoService.addTodo(createTodoDto);
     }
 }

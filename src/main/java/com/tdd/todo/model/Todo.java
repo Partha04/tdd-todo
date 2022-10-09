@@ -19,5 +19,5 @@ public class Todo {
     @Column(name = "id", nullable = false)
     private UUID id;
     private String task;
-    private boolean isCompleted;
+    private boolean completed;
 }
