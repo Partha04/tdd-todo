@@ -63,4 +63,17 @@ class TodoControllerTest {
             verify(todoService, times(1)).addTodo(any(CreateTodoRequest.class));
         }
     }
+    @Nested
+    class GetTodoTests {
+        @Test
+        void getAllTodosSuccessGivesStatusOk() throws Exception {
+            //arrange
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo");
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
+    }
+
 }
