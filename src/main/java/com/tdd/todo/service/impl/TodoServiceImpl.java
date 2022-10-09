@@ -9,7 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -22,5 +23,14 @@ public class TodoServiceImpl implements TodoService {
         Todo todo = mapper.map(createTodoRequest, Todo.class);
         Todo savedTodo = todoRepository.save(todo);
         return mapper.map(savedTodo, TodoResponse.class);
+    }
+
+    @Override
+    public List<TodoResponse> getAllTodo() {
+        List<Todo> todoList = todoRepository.findAll();
+        ArrayList<TodoResponse> todoResponses = new ArrayList<>();
+        for (Todo todo : todoList)
+            todoResponses.add(mapper.map(todo, TodoResponse.class));
+        return todoResponses;
     }
 }
