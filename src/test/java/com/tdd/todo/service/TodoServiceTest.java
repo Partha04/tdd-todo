@@ -73,4 +73,19 @@ public class TodoServiceTest extends PostgresTestContainer {
         }
 
     }
+
+    @Nested
+    class GetATodoByID {
+
+        @Test
+        void shouldGiveExistingId() {
+            Todo task1 = todoRepository.save(new Todo(null, "task1", true));
+            TodoResponse todoByID = todoService.getTodoByID(task1.getId());
+
+            assertEquals(task1.getId(), todoByID.getId());
+            assertEquals(task1.getTask(), todoByID.getTask());
+            assertEquals(task1.isCompleted(), todoByID.isCompleted()                  );
+        }
+    }
+
 }

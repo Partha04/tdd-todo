@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,6 +38,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponse getTodoByID(UUID id) {
-        return null;
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        return mapper.map(optionalTodo.get(), TodoResponse.class);
     }
 }
