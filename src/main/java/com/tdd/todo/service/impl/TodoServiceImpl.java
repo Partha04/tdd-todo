@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -32,5 +33,10 @@ public class TodoServiceImpl implements TodoService {
         for (Todo todo : todoList)
             todoResponses.add(mapper.map(todo, TodoResponse.class));
         return todoResponses;
+    }
+
+    @Override
+    public TodoResponse getTodoByID(UUID id) {
+        return null;
     }
 }

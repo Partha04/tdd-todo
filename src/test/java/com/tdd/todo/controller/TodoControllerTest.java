@@ -123,6 +123,24 @@ class TodoControllerTest {
             //assert
             resultActions.andExpect(status().isOk());
         }
+
+        @Test
+        void getATodoByIDSuccessInvokesTodoService_getTodoByIDMethod() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            when(todoService.getTodoByID(id)).thenReturn(new TodoResponse(id, "Task", false));
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk())
+                    .andExpect(jsonPath("id").value(id.toString()))
+                    .andExpect(jsonPath("task").value("Task"))
+                    .andExpect(jsonPath("completed").value(false))
+            ;
+            verify(todoService, times(1)).getTodoByID(id);
+        }
+
     }
 
 }
