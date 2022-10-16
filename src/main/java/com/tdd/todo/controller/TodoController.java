@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/todo")
@@ -26,4 +27,12 @@ public class TodoController {
     List<TodoResponse> getAlTodos() {
         return todoService.getAllTodo();
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    TodoResponse getTodoByID(@PathVariable UUID id) {
+        return todoService.getTodoByID(id);
+    }
+
+
 }

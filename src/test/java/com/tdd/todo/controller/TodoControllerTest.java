@@ -2,6 +2,7 @@ package com.tdd.todo.controller;
 
 import com.tdd.todo.dto.CreateTodoRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.service.TodoService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -107,6 +108,51 @@ class TodoControllerTest {
             //assert
             resultActions.andExpect(content().json(mapper.writeValueAsString(todoResponseList)));
             verify(todoService, times(1)).getAllTodo();
+        }
+
+    }
+
+    @Nested
+    class GetTodoByIDTests {
+        @Test
+        void getATodoByIDSuccessGivesStatusOk() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
+
+        @Test
+        void getATodoByIDSuccessInvokesTodoService_getTodoByIDMethod() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            when(todoService.getTodoByID(id)).thenReturn(new TodoResponse(id, "Task", false));
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk())
+                    .andExpect(jsonPath("id").value(id.toString()))
+                    .andExpect(jsonPath("task").value("Task"))
+                    .andExpect(jsonPath("completed").value(false))
+            ;
+            verify(todoService, times(1)).getTodoByID(id);
+        }
+
+        @Test
+        void getATodoByIDFailsForInvalidId() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            when(todoService.getTodoByID(id)).thenThrow(new EntityNotFoundException("Task not found"));
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isNotFound())
+                    .andExpect(jsonPath("message").value("Task not found"));
         }
 
     }
