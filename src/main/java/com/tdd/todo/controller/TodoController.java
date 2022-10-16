@@ -26,4 +26,12 @@ public class TodoController {
     List<TodoResponse> getAlTodos() {
         return todoService.getAllTodo();
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    TodoResponse getTodoByID() {
+        return null;
+    }
+
+
 }

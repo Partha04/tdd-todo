@@ -111,4 +111,18 @@ class TodoControllerTest {
 
     }
 
+    @Nested
+    class GetTodoByIDTests {
+        @Test
+        void getATodoByIDSuccessGivesStatusOk() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
+    }
+
 }
