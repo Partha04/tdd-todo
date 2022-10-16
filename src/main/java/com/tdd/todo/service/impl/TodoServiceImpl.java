@@ -2,6 +2,7 @@ package com.tdd.todo.service.impl;
 
 import com.tdd.todo.dto.CreateTodoRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
 import com.tdd.todo.repository.TodoRepository;
 import com.tdd.todo.service.TodoService;
@@ -39,6 +40,8 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponse getTodoByID(UUID id) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (optionalTodo.isEmpty())
+            throw new EntityNotFoundException("Todo not found");
         return mapper.map(optionalTodo.get(), TodoResponse.class);
     }
 }

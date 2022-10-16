@@ -2,6 +2,7 @@ package com.tdd.todo.service;
 
 import com.tdd.todo.dto.CreateTodoRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
 import com.tdd.todo.repository.TodoRepository;
 import com.tdd.todo.testContainers.PostgresTestContainer;
@@ -76,6 +77,10 @@ public class TodoServiceTest extends PostgresTestContainer {
 
     @Nested
     class GetATodoByID {
+        @BeforeEach
+        void setUp() {
+            todoRepository.deleteAll();
+        }
 
         @Test
         void shouldGiveExistingId() {
@@ -84,7 +89,13 @@ public class TodoServiceTest extends PostgresTestContainer {
 
             assertEquals(task1.getId(), todoByID.getId());
             assertEquals(task1.getTask(), todoByID.getTask());
-            assertEquals(task1.isCompleted(), todoByID.isCompleted()                  );
+            assertEquals(task1.isCompleted(), todoByID.isCompleted());
+        }
+
+        @Test
+        void shouldGiveErrorForNonExistingId() {
+            EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> todoService.getTodoByID(UUID.randomUUID()));
+            assertEquals("Todo not found", exception.getMessage());
         }
     }
 
