@@ -72,4 +72,19 @@ public class TodoIntegrationTest extends PostgresTestContainer {
                 .andExpect(jsonPath("$[1].task").value("task1"))
                 .andExpect(jsonPath("$[1].completed").value(true));
     }
+
+    @Test
+    void shouldGetTodoById() throws Exception {
+        //arrange
+        Todo task0 = todoRepository.save(new Todo(null, "task0", false));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/todo/{id}", task0.getId());
+        //act
+        ResultActions resultActions = mockMvc.perform(requestBuilder);
+        //assert
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("task").value("task0"))
+                .andExpect(jsonPath("completed").value(false));
+
+    }
 }
