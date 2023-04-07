@@ -1,7 +1,8 @@
 package com.tdd.todo.service.impl;
 
-import com.tdd.todo.dto.CreateTodoRequest;
+import com.tdd.todo.dto.TodoCreateRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.dto.TodoUpdateRequest;
 import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
 import com.tdd.todo.repository.TodoRepository;
@@ -22,8 +23,8 @@ public class TodoServiceImpl implements TodoService {
 
     ModelMapper mapper = new ModelMapper();
 
-    public TodoResponse addTodo(CreateTodoRequest createTodoRequest) {
-        Todo todo = mapper.map(createTodoRequest, Todo.class);
+    public TodoResponse addTodo(TodoCreateRequest todoCreateRequest) {
+        Todo todo = mapper.map(todoCreateRequest, Todo.class);
         Todo savedTodo = todoRepository.save(todo);
         return mapper.map(savedTodo, TodoResponse.class);
     }
@@ -44,4 +45,16 @@ public class TodoServiceImpl implements TodoService {
             throw new EntityNotFoundException("Todo not found");
         return mapper.map(optionalTodo.get(), TodoResponse.class);
     }
+
+    @Override
+    public TodoResponse updateTodo(UUID id, TodoUpdateRequest todoUpdateRequest) {
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (optionalTodo.isEmpty())
+            throw new EntityNotFoundException("Todo not found");
+        Todo todo = optionalTodo.get();
+        mapper.map(todoUpdateRequest, todo);
+        Todo updatedTodo = todoRepository.save(todo);
+        return mapper.map(updatedTodo, TodoResponse.class);
+    }
+
 }
