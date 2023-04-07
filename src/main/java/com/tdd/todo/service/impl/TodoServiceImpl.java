@@ -1,6 +1,6 @@
 package com.tdd.todo.service.impl;
 
-import com.tdd.todo.dto.CreateTodoRequest;
+import com.tdd.todo.dto.TodoCreateRequest;
 import com.tdd.todo.dto.TodoResponse;
 import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
@@ -22,8 +22,8 @@ public class TodoServiceImpl implements TodoService {
 
     ModelMapper mapper = new ModelMapper();
 
-    public TodoResponse addTodo(CreateTodoRequest createTodoRequest) {
-        Todo todo = mapper.map(createTodoRequest, Todo.class);
+    public TodoResponse addTodo(TodoCreateRequest todoCreateRequest) {
+        Todo todo = mapper.map(todoCreateRequest, Todo.class);
         Todo savedTodo = todoRepository.save(todo);
         return mapper.map(savedTodo, TodoResponse.class);
     }

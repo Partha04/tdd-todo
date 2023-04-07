@@ -1,7 +1,8 @@
 package com.tdd.todo.controller;
 
-import com.tdd.todo.dto.CreateTodoRequest;
+import com.tdd.todo.dto.TodoCreateRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.dto.TodoUpdateRequest;
 import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.service.TodoService;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +43,7 @@ class TodoControllerTest {
             //arrange
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/todo");
             requestBuilder.contentType(MediaType.APPLICATION_JSON);
-            requestBuilder.content(mapper.writeValueAsString(new CreateTodoRequest("task")));
+            requestBuilder.content(mapper.writeValueAsString(new TodoCreateRequest("task")));
             //act
             ResultActions resultActions = mockMvc.perform(requestBuilder);
             //assert
@@ -52,17 +53,17 @@ class TodoControllerTest {
         @Test
         void addTodoInvokesTheTodoService_addTodoMethod() throws Exception {
             //arrange
-            when(todoService.addTodo(any(CreateTodoRequest.class))).thenReturn(new TodoResponse(UUID.randomUUID(), "new task", false));
+            when(todoService.addTodo(any(TodoCreateRequest.class))).thenReturn(new TodoResponse(UUID.randomUUID(), "new task", false));
             MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/todo");
             requestBuilder.contentType(MediaType.APPLICATION_JSON);
-            requestBuilder.content(mapper.writeValueAsString(new CreateTodoRequest("task")));
+            requestBuilder.content(mapper.writeValueAsString(new TodoCreateRequest("task")));
             //act
             ResultActions resultActions = mockMvc.perform(requestBuilder);
             //assert
             resultActions.andExpect(jsonPath("id").isNotEmpty())
                     .andExpect(jsonPath("task").value("new task"))
                     .andExpect(jsonPath("completed").value(false));
-            verify(todoService, times(1)).addTodo(any(CreateTodoRequest.class));
+            verify(todoService, times(1)).addTodo(any(TodoCreateRequest.class));
         }
     }
 
@@ -155,6 +156,23 @@ class TodoControllerTest {
                     .andExpect(jsonPath("message").value("Task not found"));
         }
 
+    }
+
+    @Nested
+    class UpdateTodoByIDTests {
+
+        @Test
+        void updateTodoTaskSuccessGivesStatusOk() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/todo/{id}", id);
+            requestBuilder.contentType(MediaType.APPLICATION_JSON);
+            requestBuilder.content(mapper.writeValueAsString(new TodoUpdateRequest("updated task", true)));
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
     }
 
 }

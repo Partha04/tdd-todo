@@ -11,6 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateTodoRequest implements Serializable {
+public class TodoCreateRequest implements Serializable {
     private String task;
 }

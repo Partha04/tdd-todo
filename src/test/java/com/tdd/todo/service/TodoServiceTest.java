@@ -1,6 +1,6 @@
 package com.tdd.todo.service;
 
-import com.tdd.todo.dto.CreateTodoRequest;
+import com.tdd.todo.dto.TodoCreateRequest;
 import com.tdd.todo.dto.TodoResponse;
 import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
@@ -30,7 +30,7 @@ public class TodoServiceTest extends PostgresTestContainer {
 
         @Test
         void addTodoGivesNewlyCreatedTodoWithId() {
-            CreateTodoRequest todoRequest = new CreateTodoRequest("new Todo");
+            TodoCreateRequest todoRequest = new TodoCreateRequest("new Todo");
             TodoResponse todoResponse = todoService.addTodo(todoRequest);
             assertNotNull(todoResponse.getId());
             assertEquals(todoRequest.getTask(), todoResponse.getTask());
@@ -39,7 +39,7 @@ public class TodoServiceTest extends PostgresTestContainer {
 
         @Test
         void addTodoShouldSaveInDatabase() {
-            CreateTodoRequest todoRequest = new CreateTodoRequest("new Todo");
+            TodoCreateRequest todoRequest = new TodoCreateRequest("new Todo");
             TodoResponse todoResponse = todoService.addTodo(todoRequest);
             Optional<Todo> todoOptional = todoRepository.findById(todoResponse.getId());
             assertTrue(todoOptional.isPresent());
