@@ -216,4 +216,17 @@ class TodoControllerTest {
         }
     }
 
+    @Nested
+    class DeleteTodoByIdTests {
+        @Test
+        void deleteTodoByIdSuccessGivesStatusOk() throws Exception {
+            //arrange
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/todo/{id}", UUID.randomUUID());
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
+    }
+
 }
