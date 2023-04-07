@@ -48,7 +48,11 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponse updateTodo(UUID id, TodoUpdateRequest todoUpdateRequest) {
-        return null;
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        Todo todo = optionalTodo.get();
+        mapper.map(todoUpdateRequest, todo);
+        todoRepository.save(todo);
+        return mapper.map(todo, TodoResponse.class);
     }
 
 }

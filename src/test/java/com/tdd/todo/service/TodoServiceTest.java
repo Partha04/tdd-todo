@@ -2,6 +2,7 @@ package com.tdd.todo.service;
 
 import com.tdd.todo.dto.TodoCreateRequest;
 import com.tdd.todo.dto.TodoResponse;
+import com.tdd.todo.dto.TodoUpdateRequest;
 import com.tdd.todo.exception.EntityNotFoundException;
 import com.tdd.todo.model.Todo;
 import com.tdd.todo.repository.TodoRepository;
@@ -97,6 +98,29 @@ public class TodoServiceTest extends PostgresTestContainer {
             EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> todoService.getTodoByID(UUID.randomUUID()));
             assertEquals("Todo not found", exception.getMessage());
         }
+    }
+
+    @Nested
+    class UpdateTodoById {
+        @BeforeEach
+        void setUp() {
+            todoRepository.deleteAll();
+        }
+
+        @Test
+        void shouldUpdateExistingTodoWithGivenId() {
+            Todo oldTask = todoRepository.save(new Todo(null, "old task", false));
+            UUID oldTaskId = oldTask.getId();
+            String updatedTask = "updated task";
+            boolean taskCompleted = true;
+            todoService.updateTodo(oldTaskId, new TodoUpdateRequest(updatedTask, taskCompleted));
+            Optional<Todo> optionalTodo = todoRepository.findById(oldTaskId);
+            assertTrue(optionalTodo.isPresent());
+            Todo todo = optionalTodo.get();
+            assertEquals(updatedTask, todo.getTask());
+            assertEquals(taskCompleted, todo.isCompleted());
+        }
+
     }
 
 }
