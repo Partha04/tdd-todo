@@ -173,6 +173,29 @@ class TodoControllerTest {
             //assert
             resultActions.andExpect(status().isOk());
         }
+
+        @Test
+        void updateTodoInvokesTheTodoService_updateTodoMethod() throws Exception {
+            //arrange
+            String updatedTask = "updated task";
+            boolean taskCompleted = true;
+            when(todoService.updateTodo(any(UUID.class), any(TodoUpdateRequest.class))).thenReturn(new TodoResponse(UUID.randomUUID(), updatedTask, taskCompleted));
+            UUID id = UUID.randomUUID();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/todo/{id}", id);
+            requestBuilder.contentType(MediaType.APPLICATION_JSON);
+            TodoUpdateRequest todoUpdateRequest = new TodoUpdateRequest(updatedTask, taskCompleted);
+            requestBuilder.content(mapper.writeValueAsString(todoUpdateRequest));
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+
+            //assert
+            resultActions.andExpect(jsonPath("id").isNotEmpty())
+                    .andExpect(jsonPath("task").value(updatedTask))
+                    .andExpect(jsonPath("completed").value(taskCompleted));
+
+            verify(todoService, times(1)).updateTodo(any(UUID.class), any(TodoUpdateRequest.class));
+        }
+
     }
 
 }

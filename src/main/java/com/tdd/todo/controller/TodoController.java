@@ -40,7 +40,7 @@ public class TodoController {
 
     @PutMapping("/{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    TodoResponse updateTodoById(@PathVariable UUID id, @RequestBody TodoUpdateRequest updateTodoRequest) {
-        return null;
+    TodoResponse updateTodoById(@PathVariable UUID id, @RequestBody TodoUpdateRequest todoUpdateRequest) {
+        return todoService.updateTodo(id, todoUpdateRequest);
     }
 }
