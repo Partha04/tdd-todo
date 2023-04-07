@@ -63,7 +63,7 @@ public class TodoServiceImpl implements TodoService {
         if (optionalTodo.isEmpty())
             throw new EntityNotFoundException("Todo not found");
         todoRepository.deleteById(id);
-        return null;
+        return mapper.map(optionalTodo.get(), TodoResponse.class);
     }
 
 }

@@ -156,6 +156,18 @@ public class TodoServiceTest extends PostgresTestContainer {
             EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> todoService.deleteById(UUID.randomUUID()));
             assertEquals("Todo not found", exception.getMessage());
         }
+
+        @Test
+        void deleteTodoByExistingIdReturnDeletedTodo() {
+            Todo todo = todoRepository.save(new Todo(null, "task", false));
+            UUID id = todo.getId();
+            TodoResponse todoResponse = todoService.deleteById(id);
+
+            assertEquals(todo.getId(), todoResponse.getId());
+            assertEquals(todo.getTask(), todoResponse.getTask());
+            assertEquals(todo.isCompleted(), todoResponse.isCompleted());
+
+        }
     }
 
 }
