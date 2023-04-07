@@ -216,4 +216,46 @@ class TodoControllerTest {
         }
     }
 
+    @Nested
+    class DeleteTodoByIdTests {
+        @Test
+        void deleteTodoByIdSuccessGivesStatusOk() throws Exception {
+            //arrange
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/todo/{id}", UUID.randomUUID());
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk());
+        }
+
+        @Test
+        void deleteTodoByIdInvokesTodoService_deleteByIdMethod() throws Exception {
+            //arrange
+            UUID id = UUID.randomUUID();
+            when(todoService.deleteById(any(UUID.class))).thenReturn(new TodoResponse(id, "task", false));
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isOk())
+                    .andExpect(jsonPath("id").value(id.toString()))
+                    .andExpect(jsonPath("task").value("task"))
+                    .andExpect(jsonPath("completed").value(false));
+            verify(todoService, times(1)).deleteById(any(UUID.class));
+        }
+
+        @Test
+        void deleteATodoByIDFailsForInvalidId() throws Exception {
+            UUID id = UUID.randomUUID();
+            when(todoService.deleteById(any(UUID.class))).thenThrow(new EntityNotFoundException("Task not found"));
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/todo/{id}", id);
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isNotFound())
+                    .andExpect(jsonPath("message").value("Task not found"));
+
+        }
+    }
+
 }

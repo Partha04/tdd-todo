@@ -140,4 +140,34 @@ public class TodoServiceTest extends PostgresTestContainer {
 
     }
 
+    @Nested
+    class TodoDeleteTests {
+        @Test
+        void shouldDeleteExistingTodoByGivenId() {
+            Todo todo = todoRepository.save(new Todo(null, "old task", false));
+            UUID id = todo.getId();
+            todoService.deleteById(id);
+            Optional<Todo> optionalTodo = todoRepository.findById(id);
+            assertTrue(optionalTodo.isEmpty());
+        }
+
+        @Test
+        void shouldGiveErrorForNonExistingTodo() {
+            EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> todoService.deleteById(UUID.randomUUID()));
+            assertEquals("Todo not found", exception.getMessage());
+        }
+
+        @Test
+        void deleteTodoByExistingIdReturnDeletedTodo() {
+            Todo todo = todoRepository.save(new Todo(null, "task", false));
+            UUID id = todo.getId();
+            TodoResponse todoResponse = todoService.deleteById(id);
+
+            assertEquals(todo.getId(), todoResponse.getId());
+            assertEquals(todo.getTask(), todoResponse.getTask());
+            assertEquals(todo.isCompleted(), todoResponse.isCompleted());
+
+        }
+    }
+
 }

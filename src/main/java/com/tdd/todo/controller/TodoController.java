@@ -33,7 +33,7 @@ public class TodoController {
 
     @GetMapping("/{id}")
     @ResponseStatus(value = HttpStatus.OK)
-    TodoResponse getTodoByID(@PathVariable UUID id) {
+    TodoResponse getTodoById(@PathVariable UUID id) {
         return todoService.getTodoByID(id);
     }
 
@@ -43,4 +43,11 @@ public class TodoController {
     TodoResponse updateTodoById(@PathVariable UUID id, @RequestBody TodoUpdateRequest todoUpdateRequest) {
         return todoService.updateTodo(id, todoUpdateRequest);
     }
+
+    @DeleteMapping(("/{id}"))
+    @ResponseStatus(value = HttpStatus.OK)
+    TodoResponse deleteTodoById(@PathVariable UUID id) {
+        return todoService.deleteById(id);
+    }
+
 }

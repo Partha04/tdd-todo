@@ -20,6 +20,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -109,4 +110,22 @@ public class TodoIntegrationTest extends PostgresTestContainer {
         assertEquals(todoUpdateRequest.getTask(), todoList.get(0).getTask());
         assertEquals(todoUpdateRequest.isCompleted(), todoList.get(0).isCompleted());
     }
+
+    @Test
+    public void shouldDeleteExistingTodoById() throws Exception {
+        //arrange
+        Todo todo = todoRepository.save(new Todo(null, "task", false));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/todo/{id}", todo.getId());
+        //act
+        ResultActions resultActions = mockMvc.perform(requestBuilder);
+        //assert
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("task").value(todo.getTask()))
+                .andExpect(jsonPath("completed").value(todo.isCompleted()));
+        List<Todo> todoList = todoRepository.findAll();
+        assertTrue(todoList.isEmpty());
+    }
+
+
 }

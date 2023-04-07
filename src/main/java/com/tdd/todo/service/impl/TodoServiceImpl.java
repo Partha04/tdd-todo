@@ -57,4 +57,13 @@ public class TodoServiceImpl implements TodoService {
         return mapper.map(updatedTodo, TodoResponse.class);
     }
 
+    @Override
+    public TodoResponse deleteById(UUID id) {
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (optionalTodo.isEmpty())
+            throw new EntityNotFoundException("Todo not found");
+        todoRepository.deleteById(id);
+        return mapper.map(optionalTodo.get(), TodoResponse.class);
+    }
+
 }
