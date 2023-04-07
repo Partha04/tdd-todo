@@ -120,6 +120,7 @@ public class TodoServiceTest extends PostgresTestContainer {
             assertEquals(updatedTask, todo.getTask());
             assertEquals(taskCompleted, todo.isCompleted());
         }
+
         @Test
         void shouldReturnUpdatedTodoWithGivenId() {
             Todo oldTask = todoRepository.save(new Todo(null, "old task", false));
@@ -129,6 +130,12 @@ public class TodoServiceTest extends PostgresTestContainer {
             TodoResponse todoResponse = todoService.updateTodo(oldTaskId, new TodoUpdateRequest(updatedTask, taskCompleted));
             assertEquals(updatedTask, todoResponse.getTask());
             assertEquals(taskCompleted, todoResponse.isCompleted());
+        }
+
+        @Test
+        void shouldGiveErrorForNonExistingId() {
+            EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> todoService.updateTodo(UUID.randomUUID(), new TodoUpdateRequest()));
+            assertEquals("Todo not found", exception.getMessage());
         }
 
     }

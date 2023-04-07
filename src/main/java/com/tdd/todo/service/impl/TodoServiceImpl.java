@@ -49,10 +49,12 @@ public class TodoServiceImpl implements TodoService {
     @Override
     public TodoResponse updateTodo(UUID id, TodoUpdateRequest todoUpdateRequest) {
         Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (optionalTodo.isEmpty())
+            throw new EntityNotFoundException("Todo not found");
         Todo todo = optionalTodo.get();
         mapper.map(todoUpdateRequest, todo);
-        todoRepository.save(todo);
-        return mapper.map(todo, TodoResponse.class);
+        Todo updatedTodo = todoRepository.save(todo);
+        return mapper.map(updatedTodo, TodoResponse.class);
     }
 
 }
