@@ -140,4 +140,16 @@ public class TodoServiceTest extends PostgresTestContainer {
 
     }
 
+    @Nested
+    class TodoDeleteTests {
+        @Test
+        void shouldDeleteExistingTodoByGivenId() {
+            Todo todo = todoRepository.save(new Todo(null, "old task", false));
+            UUID id = todo.getId();
+            todoService.deleteById(id);
+            Optional<Todo> optionalTodo = todoRepository.findById(id);
+            assertTrue(optionalTodo.isEmpty());
+        }
+    }
+
 }

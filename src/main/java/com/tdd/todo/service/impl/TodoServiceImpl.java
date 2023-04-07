@@ -59,6 +59,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoResponse deleteById(UUID id) {
+        todoRepository.deleteById(id);
         return null;
     }
 
