@@ -1,6 +1,7 @@
 package com.tdd.todo.integrationTests;
 
 import com.tdd.todo.dto.TodoCreateRequest;
+import com.tdd.todo.dto.TodoUpdateRequest;
 import com.tdd.todo.model.Todo;
 import com.tdd.todo.repository.TodoRepository;
 import com.tdd.todo.testContainers.PostgresTestContainer;
@@ -47,7 +48,8 @@ public class TodoIntegrationTest extends PostgresTestContainer {
         //act
         ResultActions resultActions = mockMvc.perform(requestBuilder);
         //assert
-        resultActions.andExpect(status().isCreated()).andExpect(jsonPath("id").isNotEmpty())
+        resultActions.andExpect(status().isCreated())
+                .andExpect(jsonPath("id").isNotEmpty())
                 .andExpect(jsonPath("task").value(todoCreateRequest.getTask()))
                 .andExpect(jsonPath("completed").value(false));
         List<Todo> todoList = todoRepository.findAll();
@@ -86,5 +88,25 @@ public class TodoIntegrationTest extends PostgresTestContainer {
                 .andExpect(jsonPath("task").value("task0"))
                 .andExpect(jsonPath("completed").value(false));
 
+    }
+
+    @Test
+    public void shouldUpdateExistingTodoById() throws Exception {
+        //arrange
+        Todo task = todoRepository.save(new Todo(null, "task", false));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/todo/{id}", task.getId());
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
+        TodoUpdateRequest todoUpdateRequest = new TodoUpdateRequest("updated task", true);
+        requestBuilder.content(objectMapper.writeValueAsString(todoUpdateRequest));
+        //act
+        ResultActions resultActions = mockMvc.perform(requestBuilder);
+        //assert
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("task").value(todoUpdateRequest.getTask()))
+                .andExpect(jsonPath("completed").value(todoUpdateRequest.isCompleted()));
+        List<Todo> todoList = todoRepository.findAll();
+        assertEquals(todoUpdateRequest.getTask(), todoList.get(0).getTask());
+        assertEquals(todoUpdateRequest.isCompleted(), todoList.get(0).isCompleted());
     }
 }
