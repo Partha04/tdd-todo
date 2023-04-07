@@ -196,6 +196,24 @@ class TodoControllerTest {
             verify(todoService, times(1)).updateTodo(any(UUID.class), any(TodoUpdateRequest.class));
         }
 
+        @Test
+        void updateATodoByIDFailsForInvalidId() throws Exception {
+            //arrange
+            String taskNotFound = "Task not found";
+            String updatedTask = "updated task";
+            boolean taskCompleted = true;
+            when(todoService.updateTodo(any(UUID.class), any(TodoUpdateRequest.class))).thenThrow(new EntityNotFoundException(taskNotFound));
+            UUID id = UUID.randomUUID();
+            MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/todo/{id}", id);
+            requestBuilder.contentType(MediaType.APPLICATION_JSON);
+            TodoUpdateRequest todoUpdateRequest = new TodoUpdateRequest(updatedTask, taskCompleted);
+            requestBuilder.content(mapper.writeValueAsString(todoUpdateRequest));
+            //act
+            ResultActions resultActions = mockMvc.perform(requestBuilder);
+            //assert
+            resultActions.andExpect(status().isNotFound())
+                    .andExpect(jsonPath("message").value(taskNotFound));
+        }
     }
 
 }
