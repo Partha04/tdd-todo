@@ -47,7 +47,7 @@ public class TodoController {
     @DeleteMapping(("/{id}"))
     @ResponseStatus(value = HttpStatus.OK)
     TodoResponse deleteTodoById(@PathVariable UUID id) {
-        return null;
+        return todoService.deleteById(id);
     }
 
 }

@@ -57,4 +57,9 @@ public class TodoServiceImpl implements TodoService {
         return mapper.map(updatedTodo, TodoResponse.class);
     }
 
+    @Override
+    public TodoResponse deleteById(UUID id) {
+        return null;
+    }
+
 }
