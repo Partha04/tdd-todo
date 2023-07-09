@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:14.1-alpine
+    container_name: todo-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+  backend:
+    container_name: todo-backend
+    depends_on:
+      - db
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://todo-db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 1234
+    ports:
+      - "8080:8080"
+
+
+
